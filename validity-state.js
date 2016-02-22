@@ -4,7 +4,7 @@ function monitorValidityState (formElement) {
 
     if (!controlElement.validity.valid) {
       for (var validityState in controlElement.validity) {
-        if (controlElement.hasAttribute(validityState)) {
+        if (controlElement.validity[validityState] && controlElement.hasAttribute(validityState)) {
           controlElement.setCustomValidity(controlElement.getAttribute(validityState));
         }
       }
@@ -14,25 +14,33 @@ function monitorValidityState (formElement) {
   };
 
   // https://html.spec.whatwg.org/multipage/forms.html#category-submit
-  var submittableElements = formElement.querySelectorAll("button,input,keygen,object,select,textarea");
-  Array.from(submittableElements).forEach(function (inputElement) {
-    if (!inputElement.nextElementSibling || !inputElement.nextElementSibling.classList.contains("validity")) {
+  var submittableElementsSelector = "button,input,keygen,object,select,textarea";
+
+  var submittableElements = formElement.querySelectorAll(submittableElementsSelector);
+  Array.from(submittableElements).forEach(function (submittableElement) {
+    if (!submittableElement.nextElementSibling || !submittableElement.nextElementSibling.classList.contains("validity")) {
       var validityElement = document.createElement("div");
       validityElement.classList.add("validity");
       validityElement.setAttribute("aria-live", "polite");
-      inputElement.insertAdjacentHTML("afterend", validityElement.outerHTML);
+      submittableElement.insertAdjacentHTML("afterend", validityElement.outerHTML);
     }
 
-    inputElement.addEventListener("input", function (event) {
-      reportValidityState(event.target);
-
-      var submitElement = formElement.querySelector("[type=submit]");
-      reportValidityState(submitElement);
+    formElement.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var submittableElements = formElement.querySelectorAll(submittableElementsSelector);
+      Array.from(submittableElements).forEach(reportValidityState);
     });
 
-    inputElement.addEventListener("invalid", function (event) {
+    submittableElement.addEventListener("input", function (event) {
       event.preventDefault();
-      reportValidityState(event.target);
+      var submittableElements = formElement.querySelectorAll(submittableElementsSelector);
+      Array.from(submittableElements).forEach(reportValidityState);
+    });
+
+    submittableElement.addEventListener("invalid", function (event) {
+      event.preventDefault();
+      var submittableElements = formElement.querySelectorAll(submittableElementsSelector);
+      Array.from(submittableElements).forEach(reportValidityState);
     });
   });
 };
