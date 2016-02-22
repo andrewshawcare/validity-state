@@ -1,0 +1,4 @@
+validity-state:
+  build: .
+  ports:
+    - '80:80'

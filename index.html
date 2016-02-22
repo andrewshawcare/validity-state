@@ -1,0 +1,53 @@
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Validity State</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        line-height: 1.5rem;
+      }
+      label {
+        display: block;
+        margin-top: 1rem;
+      }
+      input[type=submit] {
+        margin-top: 1rem;
+      }
+      .validity {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Validity State</h1>
+    <form id="form">
+      <label for="name">Name</label>
+      <input id="name" type="text" required valueMissing="Name is a required field."/>
+
+      <label for="id">ID</label>
+      <input id="id" type="text" pattern="^[abc]{1,3}[def]{1,3}$" required valueMissing="ID is required." patternMismatch="ID must be 1 - 3 characters from a, b, and c followed by 1 - 3 characters from d, e, and f."/>
+
+      <label for="age">Age</label>
+      <input id="age" type="number" min="18" max="200" required valueMissing="Age is required."/>
+
+      <label for="days">Days</label>
+      <input id="days" type="number" min="0" step="5" required valueMissing="Days are required."/>
+
+      <label for="description">Description</label>
+      <input id="description" type="text" required valueMissing="Description is required."/>
+
+      <label for="url">URL</label>
+      <input id="url" type="url" required valueMissing="URL is required."/>
+
+      <label for="email">Email</label>
+      <input id="email" type="email" required valueMissing="Email is required."/>
+
+      <input type="submit"/>
+    </form>
+    <script src="./validity-state.js"></script>
+    <script>
+      monitorValidityState(document.getElementById("form"));
+    </script>
+  </body>
+</html>
